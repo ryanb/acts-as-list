@@ -10,7 +10,6 @@ begin
     p.url            = "http://github.com/ryanb/acts-as-list"
     p.author         = ['Ryan Bates', 'Rails Core']
     p.email          = "ryan (at) railscasts (dot) com"
-    p.ignore_pattern = ["script/*"]
   end
 
 rescue LoadError => boom

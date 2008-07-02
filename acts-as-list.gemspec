@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.description = %q{Gem version of acts_as_list Rails plugin.}
   s.email = %q{ryan (at) railscasts (dot) com}
   s.extra_rdoc_files = ["lib/acts_as_list.rb", "README", "tasks/deployment.rake"]
-  s.files = ["lib/acts_as_list.rb", "README", "tasks/deployment.rake", "test/list_test.rb", "Manifest", "acts-as-list.gemspec"]
+  s.files = ["lib/acts_as_list.rb", "Manifest", "README", "tasks/deployment.rake", "test/list_test.rb", "acts-as-list.gemspec"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/ryanb/acts-as-list}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Acts-as-list", "--main", "README"]
@@ -48,7 +48,6 @@ end
 #     p.url            = "http://github.com/ryanb/acts-as-list"
 #     p.author         = ['Ryan Bates', 'Rails Core']
 #     p.email          = "ryan (at) railscasts (dot) com"
-#     p.ignore_pattern = ["script/*"]
 #   end
 # 
 # rescue LoadError => boom
