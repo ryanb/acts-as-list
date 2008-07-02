@@ -4,7 +4,7 @@ require 'rake'
 begin
   require 'echoe'
 
-  Echoe.new('acts-as-list', '0.1.0') do |p|
+  Echoe.new('acts-as-list', '0.1.1') do |p|
     p.summary        = "Gem version of acts_as_list Rails plugin."
     p.description    = "Gem version of acts_as_list Rails plugin."
     p.url            = "http://github.com/ryanb/acts-as-list"
