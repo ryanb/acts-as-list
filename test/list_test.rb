@@ -221,6 +221,43 @@ class ListTest < Test::Unit::TestCase
     assert_equal 3, ListMixin.find(4).pos
   end 
   
+  # special thanks to openhood on github
+  def test_delete_middle_with_holes
+    # first we check everything is at expected place
+    assert_equal [1, 2, 3, 4], ListMixin.find(:all, :conditions => 'parent_id = 5', :order => 'pos').map(&:id)
+
+    # then we create a hole in the list, say you're working with existing data in which you already have holes
+    # or your scope is very complex
+    ListMixin.delete(2)
+
+    # we ensure the hole is really here
+    assert_equal [1, 3, 4], ListMixin.find(:all, :conditions => 'parent_id = 5', :order => 'pos').map(&:id)
+    assert_equal 1, ListMixin.find(1).pos
+    assert_equal 3, ListMixin.find(3).pos
+    assert_equal 4, ListMixin.find(4).pos
+
+    # can we retrieve lower item despite the hole?
+    assert_equal 3, ListMixin.find(1).lower_item.id
+
+    # can we move an item lower jumping more than one position?
+    ListMixin.find(1).move_lower
+    assert_equal [3, 1, 4], ListMixin.find(:all, :conditions => 'parent_id = 5', :order => 'pos').map(&:id)
+    assert_equal 2, ListMixin.find(3).pos
+    assert_equal 3, ListMixin.find(1).pos
+    assert_equal 4, ListMixin.find(4).pos
+
+    # create another hole
+    ListMixin.delete(1)
+
+    # can we retrieve higher item despite the hole?
+    assert_equal 3, ListMixin.find(4).higher_item.id
+
+    # can we move an item higher jumping more than one position?
+    ListMixin.find(4).move_higher
+    assert_equal [4, 3], ListMixin.find(:all, :conditions => 'parent_id = 5', :order => 'pos').map(&:id)
+    assert_equal 2, ListMixin.find(4).pos
+    assert_equal 3, ListMixin.find(3).pos
+  end
 end
 
 class ListSubTest < Test::Unit::TestCase

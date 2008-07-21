@@ -79,21 +79,21 @@ module ActsAsList
 
     # Swap positions with the next lower item, if one exists.
     def move_lower
-      return unless lower_item
-
+      lower = lower_item
+      return unless lower
       acts_as_list_class.transaction do
-        lower_item.decrement_position
-        increment_position
+        self.update_attribute(position_column, lower.send(position_column))
+        lower.decrement_position
       end
     end
 
     # Swap positions with the next higher item, if one exists.
     def move_higher
-      return unless higher_item
-
+      higher = higher_item
+      return unless higher
       acts_as_list_class.transaction do
-        higher_item.increment_position
-        decrement_position
+        self.update_attribute(position_column, higher.send(position_column))
+        higher.increment_position
       end
     end
 
@@ -153,7 +153,7 @@ module ActsAsList
     def higher_item
       return nil unless in_list?
       acts_as_list_class.find(:first, :conditions =>
-        "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i - 1).to_s}"
+        "#{scope_condition} AND #{position_column} < #{send(position_column).to_s}", :order => "#{position_column} DESC"
       )
     end
 
@@ -161,7 +161,7 @@ module ActsAsList
     def lower_item
       return nil unless in_list?
       acts_as_list_class.find(:first, :conditions =>
-        "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i + 1).to_s}"
+        "#{scope_condition} AND #{position_column} > #{send(position_column).to_s}", :order => "#{position_column} ASC"
       )
     end
 
