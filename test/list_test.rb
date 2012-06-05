@@ -6,7 +6,10 @@ require 'active_record'
 
 require "#{File.dirname(__FILE__)}/../lib/acts_as_list"
 
-ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
+# For ActiveRecord >= 3.0.0
+ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+# For ActiveRecord < 3.0.0
+# ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
 
 def setup_db
   ActiveRecord::Schema.define(:version => 1) do
@@ -48,6 +51,12 @@ end
 
 
 class ListTest < Test::Unit::TestCase
+  
+  def add_troublesome_default_scope
+    ListMixin.class_eval do
+      default_scope order(:pos)
+    end
+  end
 
   def setup
     setup_db
@@ -258,6 +267,18 @@ class ListTest < Test::Unit::TestCase
     assert_equal 2, ListMixin.find(4).pos
     assert_equal 3, ListMixin.find(3).pos
   end
+  
+  def test_inserts_correctly_when_class_has_a_default_scope_ordering_by_position
+    #default_scope also added in add_troublesome_scope method so that it also covers all other tests
+    #duplicated code in case rest of code changes and this does not.
+    ListMixin.class_eval do
+      default_scope order(:pos)
+    end
+    2.times { ListMixin.create! :parent_id => 5678 }
+    @three = ListMixin.create! :parent_id => 5678
+    assert_equal 3, @three.pos
+  end
+  
 end
 
 class ListSubTest < Test::Unit::TestCase
